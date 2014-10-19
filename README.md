@@ -27,7 +27,9 @@ Arduino Pro Miniと10桁7セグメントLEDで作る、UNIX時間を表示する
 * ブレッドボード用 固いジャンパワイヤ（257円）[[switch-science.com](http://www.switch-science.com/catalog/314/)]
 * ジャンパワイヤ オス～メス（446円）[[switch-science.com](http://www.switch-science.com/catalog/209/)]
 * USBマイクロBコネクタ・ピッチ変換基板（220円）[[switch-science.com](http://www.switch-science.com/catalog/1599/)]
-* SparkFun 超小型ブレッドボード 白（445円）[[switch-science.com](http://www.switch-science.com/catalog/1475/)]
+* ~~SparkFun 超小型ブレッドボード 白（445円）[[switch-science.com](http://www.switch-science.com/catalog/1475/)]~~
+* 超小型ブレッドボード 白（200円）連結できないタイプ[[aitendo.com](http://www.aitendo.com/product/2015)]
+  - 連結できるタイプの場合、作例のようにArduino Pro miniをはみ出させて挿すことができない
 
 ### オプション
 
