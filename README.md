@@ -34,18 +34,18 @@ Arduino Pro Miniと10桁7セグメントLEDで作る、UNIX時間を表示する
 * アクリル板 2mm厚 スモークブラウン1枚・2mm厚 黒2枚（約1,500円）
   - ケースがあると出来栄えが全く違うので、ハードルは高いですが用意したほうがいいです
 
-  なお、全て5V製品（[Arduino Pro Mini 328 5V 16MHz](http://www.switch-science.com/catalog/946/)、[DS1307 リアルタイムクロック・モジュール](http://www.switch-science.com/catalog/1726/) など）を使うとI2Cバスレベル変換モジュールが不要になります。
+なお、全て5V製品（[Arduino Pro Mini 328 5V 16MHz](http://www.switch-science.com/catalog/946/)、[DS1307 リアルタイムクロック・モジュール](http://www.switch-science.com/catalog/1726/) など）を使うとI2Cバスレベル変換モジュールが不要になります。
 
-  安価に作りたい場合は、時間はかかりますが、すべての部品をAliExpressなどの海外通販サイトで集めるとよいです。
+安価に作りたい場合は、時間はかかりますが、すべての部品をAliExpressなどの海外通販サイトで集めるとよいです。
 
-  ## Software
+## Software
 
-  * Arduino IED 1.0.6
+* Arduino IED 1.0.6
 
-  ## 回路図・配線
+## 回路図・配線
 
-  （後で書く）
+（後で書く）
 
-  ## Images
+## Images
 
-  ![Photo2](https://github.com/CLCL/unixtime_7segclock/wiki/images/img1051_720.jpg)
+![Photo2](https://github.com/CLCL/unixtime_7segclock/wiki/images/img1051_720.jpg)
