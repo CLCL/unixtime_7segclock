@@ -1,6 +1,6 @@
 # unixtime_7segclock
 
-Arduino用Unix時刻表示7セグメントLED表示器
+Arduino用Unix時間表示7セグメントLED表示器
 
 ## Hardware
 
