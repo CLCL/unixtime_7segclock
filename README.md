@@ -40,7 +40,7 @@ Arduino Pro Miniと10桁7セグメントLEDで作る、UNIX時間を表示する
 
 ## Software
 
-* Arduino IED 1.0.6
+* Arduino IDE 1.0.6
 
 ## 回路図・配線
 
