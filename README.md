@@ -19,24 +19,25 @@ Arduino Pro Miniと10桁7セグメントLEDで作る、UNIX時間を表示する
 
 ### 必要なもの
 
-* Arduino Pro Mini 328 3.3V 8MHz（1,124円）[[switch-science.com](http://www.switch-science.com/catalog/876/)]
-* DS3231 RTC Battery 3.3V （160円）[[aliexpress.com](http://www.aliexpress.com/snapshot/6174388492.html)]
-* I2Cバス用双方向電圧レベル変換モジュールPCA9306（150円）[[akizukidenshi.com](http://akizukidenshi.com/catalog/g/gM-05452)]
-* 10桁7セグ表示モジュール基板 赤色7seg付き（3,600円） [[kitalab.com](http://store.kitalab.com/p_segmod.html)]
-* 2ピンのタクトスイッチ 20個入り（637円） [[switch-science.com](http://www.switch-science.com/catalog/1706/)]
-* ブレッドボード用 固いジャンパワイヤ（257円）[[switch-science.com](http://www.switch-science.com/catalog/314/)]
-* ジャンパワイヤ オス～メス（446円）[[switch-science.com](http://www.switch-science.com/catalog/209/)]
-* USBマイクロBコネクタ・ピッチ変換基板（220円）[[switch-science.com](http://www.switch-science.com/catalog/1599/)]
-* ~~SparkFun 超小型ブレッドボード 白（445円）[[switch-science.com](http://www.switch-science.com/catalog/1475/)]~~
-* 超小型ブレッドボード 白（200円）連結できないタイプ[[aitendo.com](http://www.aitendo.com/product/2015)]
-  - 連結できるタイプの場合、作例のようにArduino Pro miniをはみ出させて挿すことができない
+詳細な部品表と参考価格は [Wiki](https://github.com/CLCL/unixtime_7segclock/wiki) で
+
+* 1機  Arduino Pro Mini 328 3.3V 8MHz（※）
+* 1個  DS3231 RTC Battery 3.3V（※）
+* 1個  I2Cバス用双方向電圧レベル変換モジュールPCA9306（※）
+* 1台  10桁7セグ表示モジュール基板 赤色7seg付き（※）
+* 2個  2ピンのタクトスイッチ
+* 適量 ブレッドボード用 固いジャンパワイヤ
+* 2本  ジャンパワイヤ オス～メス I2Cバス引き回し用
+* 1個  USBマイクロBコネクタ・ピッチ変換基板 5V電源入力用
+* 1個  超小型ブレッドボード 白 連結できないタイプ
+* 2ﾋﾟﾝ ピンヘッダ I2Cバス接続用
 
 ### オプション
 
-* アクリル板 2mm厚 スモークブラウン1枚・2mm厚 黒2枚（約1,500円）
+* アクリル板 2mm厚 スモークブラウン1枚・2mm厚 黒2枚
   - ケースがあると出来栄えが全く違うので、ハードルは高いですが用意したほうがいいです
 
-なお、全て5V製品（[Arduino Pro Mini 328 5V 16MHz](http://www.switch-science.com/catalog/946/)、[DS1307 リアルタイムクロック・モジュール](http://www.switch-science.com/catalog/1726/) など）を使うとI2Cバスレベル変換モジュールが不要になります。
+※全て5V製品（Arduino Pro Mini 328 5V 16MHz・、DS1307 リアルタイムクロック・モジュール など）を使うとI2Cバスレベル変換モジュールが不要になります。7セグ表示器は5V製品ですが3.3Vでも動かせるので固定抵抗の調整等検討してください。
 
 安価に作りたい場合は、時間はかかりますが、すべての部品をAliExpressなどの海外通販サイトで集めるとよいです。
 
