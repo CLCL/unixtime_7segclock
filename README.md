@@ -47,7 +47,7 @@ Arduino Pro Miniと10桁7セグメントLEDで作る、UNIX時間を表示する
 
 ## 回路図・配線
 
-（後で書く）
+![breadboard1](https://github.com/CLCL/unixtime_7segclock/wiki/images/unixtime_7segclock_breadboard_720.jpg)
 
 ## Images
 
