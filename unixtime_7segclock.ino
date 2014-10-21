@@ -1,7 +1,7 @@
 /*
   Arduino用Unix時刻時計 unixtime_7segclock.ino
-  https://github.com/CLCL/unixtime_7segclock
-*/
+ https://github.com/CLCL/unixtime_7segclock
+ */
 
 #include <Wire.h>
 #include <Time.h>
@@ -10,11 +10,13 @@
 #include <Button.h> // http://arduino-info.wikispaces.com/HAL-LibrariesUpdates
 #include <LED.h>    // http://arduino-info.wikispaces.com/HAL-LibrariesUpdates
 #include "KitaLab7SEG.h"
+#include "UTILITIES.h"
 
 const int TICK = 100; // システムの1TICKあたりの時間 100ms
 
 // KitaLab 7セグメント10桁LED表示装置表示用補助ライブラリ 
 KitaLab7SEG seg;
+UTILITIES util;
 
 // FiniteStateMachine 有限状態機械ライブラリ（State, FSM）
 // State:状態（モード）の設定
@@ -28,7 +30,7 @@ State SETM  = State(S_SETM_enter,  S_SETM_update,  S_SETM_exit);
 State SETD  = State(S_SETD_enter,  S_SETD_update,  S_SETD_exit);
 State SETh  = State(S_SETh_enter,  S_SETh_update,  S_SETh_exit);
 State SETm  = State(S_SETm_enter,  S_SETm_update,  S_SETm_exit);
-State SETh  = State(S_SETs_enter,  S_SETs_update,  S_SETs_exit);
+State SETs  = State(S_SETs_enter,  S_SETs_update,  S_SETs_exit);
 // FSM:初期状態はUTIME
 FSM stateMachine = FSM(UTIME);
 
@@ -40,7 +42,6 @@ Button setButton  = Button(A3, PULLUP); // A3ピン（17ピン）
 LED stateLED = LED(13); // Arduino本体のパイロットランプLED
 
 // グローバル 日付時刻構造体
-tmElements_t tm; 
 tmElements_t tm2; // 時刻合わせの一時的設定値 
 
 //グローバル変数
@@ -252,8 +253,8 @@ void S_CLOCK_enter() {
 void S_CLOCK_update() {
   char str1[10];
   sprintf( str1, "%02d%02d%02d%02d%02d",
-    month(), day(), hour(), minute(), second()
-  );
+  month(), day(), hour(), minute(), second()
+    );
   seg.display( str1 );
 }
 void S_CLOCK_exit() {
@@ -263,7 +264,7 @@ void S_CLOCK_exit() {
 // S_SETY 時刻合わせ
 void S_SETY_enter() {
   stateLED.on();  // Pin13(LED)を消灯
-  tm2 = tm;
+  tm2.Year = year() - 178;
 }
 void S_SETY_update() {
   char str1[10], str2[10];
@@ -277,7 +278,7 @@ void S_SETY_exit() {
 
 // S_SETM 時刻合わせ
 void S_SETM_enter() {
-  // NOOP
+  tm2.Month = month();
 }
 void S_SETM_update() {
   char str1[10], str2[10];
@@ -291,7 +292,7 @@ void S_SETM_exit() {
 
 // S_SETD 時刻合わせ
 void S_SETD_enter() {
-  // NOOP
+  tm2.Day = day();
 }
 void S_SETD_update() {
   char str1[10], str2[10];
@@ -363,19 +364,16 @@ void initTime() {   // システム時刻をRTCの精密な時刻に設定する
 }
 
 void adjustCompiledTime() { // RTCをPCの時刻に合わせる
-  // コンパイラが__DATE__と__TIME__を定数に置換する
-  if (getDate(__DATE__) && getTime(__TIME__)) {
-    // getDate/getTimeは定数文字列をグローバル構造体 tm にセットする
-    time_t t = makeTime(tm); // time_t はUnix時間（2038年問題あり）
-    t += 11; // コンパイルから実行までのオフセット秒
-    setTime(t); // システム時刻を設定する
-    if (RTC.set(t)) {  // RTCに時刻を設定する
-      Serial.println(F("Write RTC."));
-    }
+  time_t t = util.adjustCompiledTime();
+  setTime(t); // システム時刻を設定する
+  if (RTC.set(t)) {  // RTCに時刻を設定する
+    Serial.println(F("Adjust from compiled time."));
+    Serial.println(F("Write RTC."));
   }
 }
 
 time_t getRTC() {
+  tmElements_t tm; 
   // RTCからの読み取り処理
   if (RTC.read(tm)) {
     // RTCから読み込み成功
@@ -404,36 +402,3 @@ void initSerial() { // Arduino IDEのシリアルコンソールに送信
   while (!Serial) ; // wait for serial
   delay(200);
 }
-
-// __TIME__パース用関数
-bool getTime(const char *str) {
-  int Hour, Min, Sec;
- 
-  if (sscanf(str, "%d:%d:%d", &Hour, &Min, &Sec) != 3) return false;
-  tm.Hour   = Hour;
-  tm.Minute = Min;
-  tm.Second = Sec;
-  return true;
-}
- 
-// __DATE__パース用関数
-bool getDate(const char *str) {
-  const char *monthName[12] = {
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-  };
-  char Month[12];
-  int Day, Year;
-  uint8_t monthIndex;
- 
-  if (sscanf(str, "%s %d %d", Month, &Day, &Year) != 3) return false;
-  for (monthIndex = 0; monthIndex < 12; monthIndex++) {
-    if (strcmp(Month, monthName[monthIndex]) == 0) break;
-  }
-  if (monthIndex >= 12) return false;
-  tm.Day = Day;
-  tm.Month = monthIndex + 1;
-  tm.Year = CalendarYrToTm(Year);
-  return true;
-}
-
