@@ -33,7 +33,7 @@ FSM stateMachine = FSM(UTIME);
 
 // Buttonライブラリ
 Button modeButton = Button( 4, PULLUP); // 4ピン
-Button setButton  = Button(17, PULLUP); // A3ピン（17ピン）
+Button setButton  = Button(A3, PULLUP); // A3ピン
 
 // LEDライブラリ
 LED stateLED = LED(13); // Arduino本体のパイロットランプLED
