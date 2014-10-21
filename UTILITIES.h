@@ -8,7 +8,7 @@ class UTILITIES
 {
 public:
   UTILITIES(void);   // コンストラクタ
-  time_t adjustCompiledTime(void);
+  void adjustCompiledTime(void);
   bool getTime(const char *str);
   bool getDate(const char *str);
 private:
