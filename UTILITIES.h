@@ -9,6 +9,8 @@ class UTILITIES
 public:
   UTILITIES(void);   // コンストラクタ
   void adjustCompiledTime(void);
+  void initTime(void);
+  time_t getRTC(void);
   bool getTime(const char *str);
   bool getDate(const char *str);
 private:
@@ -16,4 +18,3 @@ private:
 };
 
 #endif
-
