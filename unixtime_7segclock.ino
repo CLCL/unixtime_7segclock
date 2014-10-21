@@ -50,7 +50,7 @@ unsigned short counter = 0; // TICKカウンタ
 // 初期化
 void setup() {
   seg.init(); // 7segLED初期化
-  initSerial(); // デバッグモニタ用シリアル初期化
+  util.initSerial(); // デバッグモニタ用シリアル初期化
   util.initTime();   // システム時刻初期化（RTCとシンクロする）
   //util.adjustCompiledTime(); // RTCに時刻を設定したい時に利用
 }
@@ -344,13 +344,4 @@ void S_SETs_update() {
 }
 void S_SETs_exit() {
   // NOOP
-}
-
-
-// サブルーチン集
-
-void initSerial() { // Arduino IDEのシリアルコンソールに送信
-  Serial.begin(9600);
-  while (!Serial) ; // wait for serial
-  delay(200);
 }

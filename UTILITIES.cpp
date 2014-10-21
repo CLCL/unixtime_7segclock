@@ -7,6 +7,12 @@
 UTILITIES::UTILITIES() {
 }
 
+void UTILITIES::initSerial() { // Arduino IDEのシリアルコンソールに送信
+  Serial.begin(9600);
+  while (!Serial) ; // wait for serial
+  delay(200);
+}
+
 void UTILITIES::initTime() {   // システム時刻をRTCの精密な時刻に設定する
   Serial.println(F("Sync to RTC..."));
   time_t t_old = getRTC();
