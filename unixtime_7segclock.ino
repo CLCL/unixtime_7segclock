@@ -42,7 +42,7 @@ Button setButton  = Button(A3, PULLUP); // A3ピン（17ピン）
 LED stateLED = LED(13); // Arduino本体のパイロットランプLED
 
 // グローバル 日付時刻構造体
-tmElements_t tm2; // 時刻合わせの一時的設定値 
+tmElements_t tm; // 時刻合わせの一時的設定値 
 
 //グローバル変数
 unsigned short counter = 0; // TICKカウンタ
@@ -112,8 +112,8 @@ void loop() {
     }
     // セットボタンだけ押したとき
     else if ( setButton.uniquePress() ) {
-      tm2.Year++;
-      if (tm2.Year > 68) tm2.Year = 0;
+      tm.Year++;
+      if (tm.Year > 68) tm.Year = 0;
       seg.resetBlinkCounter();
     }
   }
@@ -131,8 +131,8 @@ void loop() {
     }
     // セットボタンだけ押したとき
     else if ( setButton.uniquePress() ) {
-      tm2.Month++;
-      if (tm2.Month > 12) tm2.Month = 1;
+      tm.Month++;
+      if (tm.Month > 12) tm.Month = 1;
       seg.resetBlinkCounter();
     }
   }
@@ -150,16 +150,16 @@ void loop() {
     }
     // セットボタンだけ押したとき
     else if ( setButton.uniquePress() ) {
-      tm2.Day++;
+      tm.Day++;
       int dayofmonth[] = {
         31, 28, 31, 30, 31, 30,
         31, 31, 30, 31, 30, 31,
       };
-      if ( (tm2.Year + 1970) % 4 == 0 ) { 
+      if ( (tm.Year + 1970) % 4 == 0 ) { 
         dayofmonth[1]++; // 1976年～2038年の閏日分
       }
-      int d = dayofmonth[tm2.Month -1]; // 月の日数
-      if (tm2.Day > d) tm2.Day = 1;
+      int d = dayofmonth[tm.Month -1]; // 月の日数
+      if (tm.Day > d) tm.Day = 1;
       seg.resetBlinkCounter();
     }
   }
@@ -177,8 +177,8 @@ void loop() {
     }
     // セットボタンだけ押したとき
     else if ( setButton.uniquePress() ) {
-      tm2.Hour++;
-      if (tm2.Hour > 23) tm2.Hour = 0;
+      tm.Hour++;
+      if (tm.Hour > 23) tm.Hour = 0;
       seg.resetBlinkCounter();
     }
   }
@@ -196,8 +196,8 @@ void loop() {
     }
     // セットボタンだけ押したとき
     else if ( setButton.uniquePress() ) {
-      tm2.Minute++;
-      if (tm2.Minute > 59) tm2.Minute = 0;
+      tm.Minute++;
+      if (tm.Minute > 59) tm.Minute = 0;
       seg.resetBlinkCounter();
     }
   }
@@ -210,7 +210,7 @@ void loop() {
       }
       // モードボタンだけ押したとき
       else {
-        time_t t = makeTime(tm2); // time_t はUnix時間（2038年問題あり）
+        time_t t = makeTime(tm); // time_t はUnix時間（2038年問題あり）
         setTime(t); // システム時刻を設定する
         if (RTC.set(t)) {  // RTCに時刻を設定する
           Serial.println(F("Write RTC."));
@@ -220,8 +220,8 @@ void loop() {
     }
     // セットボタンだけ押したとき
     else if ( setButton.uniquePress() ) {
-      tm2.Second++;
-      if (tm2.Second > 59) tm2.Second = 0;
+      tm.Second++;
+      if (tm.Second > 59) tm.Second = 0;
       seg.resetBlinkCounter();
     }
   }
@@ -264,11 +264,11 @@ void S_CLOCK_exit() {
 // S_SETY 時刻合わせ
 void S_SETY_enter() {
   stateLED.on();  // Pin13(LED)を消灯
-  tm2.Year = year() - 178;
+  tm.Year = year() - 178;
 }
 void S_SETY_update() {
   char str1[10], str2[10];
-  sprintf( str1, "%4d      ",  tm2.Year + 1970 );
+  sprintf( str1, "%4d      ",  tm.Year + 1970 );
   sprintf( str2, "          " );
   seg.blink( str1, str2 );
 }
@@ -278,12 +278,12 @@ void S_SETY_exit() {
 
 // S_SETM 時刻合わせ
 void S_SETM_enter() {
-  tm2.Month = month();
+  tm.Month = month();
 }
 void S_SETM_update() {
   char str1[10], str2[10];
-  sprintf( str1, "%4d%02d    ", tm2.Year + 1970, tm2.Month );
-  sprintf( str2, "%4d      ",   tm2.Year + 1970 );
+  sprintf( str1, "%4d%02d    ", tm.Year + 1970, tm.Month );
+  sprintf( str2, "%4d      ",   tm.Year + 1970 );
   seg.blink( str1, str2 );
 }
 void S_SETM_exit() {
@@ -292,12 +292,12 @@ void S_SETM_exit() {
 
 // S_SETD 時刻合わせ
 void S_SETD_enter() {
-  tm2.Day = day();
+  tm.Day = day();
 }
 void S_SETD_update() {
   char str1[10], str2[10];
-  sprintf( str1, "%4d%02d%02d  ", tm2.Year + 1970, tm2.Month, tm2.Day );
-  sprintf( str2, "%4d%02d    ",   tm2.Year + 1970 ,tm2.Month );
+  sprintf( str1, "%4d%02d%02d  ", tm.Year + 1970, tm.Month, tm.Day );
+  sprintf( str2, "%4d%02d    ",   tm.Year + 1970 ,tm.Month );
   seg.blink( str1, str2 );
 }
 void S_SETD_exit() {
@@ -306,11 +306,11 @@ void S_SETD_exit() {
 
 // S_SETh 時刻合わせ
 void S_SETh_enter() {
-  tm2.Hour = hour();
+  tm.Hour = hour();
 }
 void S_SETh_update() {
   char str1[10], str2[10];
-  sprintf( str1, "    %02d    ", tm2.Hour );
+  sprintf( str1, "    %02d    ", tm.Hour );
   sprintf( str2, "          " );
   seg.blink( str1, str2 );
 }
@@ -320,12 +320,12 @@ void S_SETh_exit() {
 
 // S_SETm 時刻合わせ
 void S_SETm_enter() {
-  tm2.Minute = minute();
+  tm.Minute = minute();
 }
 void S_SETm_update() {
   char str1[10], str2[10];
-  sprintf( str1, "    %02d%02d  ", tm2.Hour, tm2.Minute );
-  sprintf( str2, "    %02d    ",   tm2.Hour );
+  sprintf( str1, "    %02d%02d  ", tm.Hour, tm.Minute );
+  sprintf( str2, "    %02d    ",   tm.Hour );
   seg.blink( str1, str2 );
 }
 void S_SETm_exit() {
@@ -334,12 +334,12 @@ void S_SETm_exit() {
 
 // S_SETm 時刻合わせ
 void S_SETs_enter() {
-  tm2.Second = second();
+  tm.Second = second();
 }
 void S_SETs_update() {
   char str1[10], str2[10];
-  sprintf( str1, "    %02d%02d%02d", tm2.Hour, tm2.Minute, tm2.Second );
-  sprintf( str2, "    %02d%02d  ",   tm2.Hour, tm2.Minute );
+  sprintf( str1, "    %02d%02d%02d", tm.Hour, tm.Minute, tm.Second );
+  sprintf( str2, "    %02d%02d  ",   tm.Hour, tm.Minute );
   seg.blink( str1, str2 );
 }
 void S_SETs_exit() {
