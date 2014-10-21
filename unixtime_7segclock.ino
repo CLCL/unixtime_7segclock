@@ -20,7 +20,7 @@ KitaLab7SEG seg;
 // State:状態（モード）の設定
 // UTIME=Unix時間表示モード、CLOCK=時計（MMHHhhmmss）表示モード
 // SETY=年合わせモード、SETM=月合わせモード、SETD=日合わせモード
-// SETs=時合わせモード、SETm=秒合わせモード、SETs=秒合わせモード
+// SETh=時合わせモード、SETm=秒合わせモード、SETs=秒合わせモード
 State UTIME = State(S_UTIME_enter, S_UTIME_update, S_UTIME_exit);
 State CLOCK = State(S_CLOCK_enter, S_CLOCK_update, S_CLOCK_exit);
 State SETY  = State(S_SETY_enter,  S_SETY_update,  S_SETY_exit);
@@ -28,7 +28,7 @@ State SETM  = State(S_SETM_enter,  S_SETM_update,  S_SETM_exit);
 State SETD  = State(S_SETD_enter,  S_SETD_update,  S_SETD_exit);
 State SETh  = State(S_SETh_enter,  S_SETh_update,  S_SETh_exit);
 State SETm  = State(S_SETm_enter,  S_SETm_update,  S_SETm_exit);
-State SETs  = State(S_SETs_enter,  S_SETs_update,  S_SETs_exit);
+State SETh  = State(S_SETs_enter,  S_SETs_update,  S_SETs_exit);
 // FSM:初期状態はUTIME
 FSM stateMachine = FSM(UTIME);
 
