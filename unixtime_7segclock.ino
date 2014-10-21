@@ -9,17 +9,18 @@
 #include <FiniteStateMachine.h> // http://arduino-info.wikispaces.com/HAL-LibrariesUpdates
 #include <Button.h> // http://arduino-info.wikispaces.com/HAL-LibrariesUpdates
 #include <LED.h>    // http://arduino-info.wikispaces.com/HAL-LibrariesUpdates
+#include "KitaLab7SEG.h"
 
 const int TICK = 100; // システムの1TICKあたりの時間 100ms
-const int SEGLED = 0x60; // 北ラボ製 10桁I2C 7セグ表示機用I2Cアドレス
-const int digits[] = { // 7セグメント点灯パターン
-  0x3f, 0x06, 0x5b, 0x4f, 0x66, // 0～5
-  0x6d, 0x7d, 0x27, 0x7f, 0x6f, // 6～9
-};
+
+// KitaLab 7セグメント10桁LED表示装置表示用補助ライブラリ 
+KitaLab7SEG seg;
 
 // FiniteStateMachine 有限状態機械ライブラリ（State, FSM）
 // State:状態（モード）の設定
 // UTIME=Unix時間表示モード、CLOCK=時計（MMHHhhmmss）表示モード
+// SETY=年合わせモード、SETM=月合わせモード、SETD=日合わせモード
+// SETs=時合わせモード、SETm=秒合わせモード、SETs=秒合わせモード
 State UTIME = State(S_UTIME_enter, S_UTIME_update, S_UTIME_exit);
 State CLOCK = State(S_CLOCK_enter, S_CLOCK_update, S_CLOCK_exit);
 State SETY  = State(S_SETY_enter,  S_SETY_update,  S_SETY_exit);
@@ -33,23 +34,21 @@ FSM stateMachine = FSM(UTIME);
 
 // Buttonライブラリ
 Button modeButton = Button( 4, PULLUP); // 4ピン
-Button setButton  = Button(A3, PULLUP); // A3ピン
+Button setButton  = Button(A3, PULLUP); // A3ピン（17ピン）
 
 // LEDライブラリ
 LED stateLED = LED(13); // Arduino本体のパイロットランプLED
 
-// 日付時刻構造体
+// グローバル 日付時刻構造体
 tmElements_t tm; 
 tmElements_t tm2; // 時刻合わせの一時的設定値 
 
 //グローバル変数
-unsigned short counter       = 0; // TICKカウンタ
-unsigned short counter_blink = 0; // BLINKカウンタ
-String str7seg = ""; // 7segLEDの現在の表示文字列
+unsigned short counter = 0; // TICKカウンタ
 
 // 初期化
 void setup() {
-  init7seg();   // 7segLED初期化
+  seg.init(); // 7segLED初期化
   initSerial(); // デバッグモニタ用シリアル初期化
   initTime();   // システム時刻初期化（RTCとシンクロする）
   //adjustCompiledTime(); // RTCに時刻を設定したい時に利用
@@ -114,7 +113,7 @@ void loop() {
     else if ( setButton.uniquePress() ) {
       tm2.Year++;
       if (tm2.Year > 68) tm2.Year = 0;
-      counter_blink = 0;
+      seg.resetBlinkCounter();
     }
   }
   // 月設定
@@ -133,7 +132,7 @@ void loop() {
     else if ( setButton.uniquePress() ) {
       tm2.Month++;
       if (tm2.Month > 12) tm2.Month = 1;
-      counter_blink = 0;
+      seg.resetBlinkCounter();
     }
   }
   // 日設定
@@ -160,7 +159,7 @@ void loop() {
       }
       int d = dayofmonth[tm2.Month -1]; // 月の日数
       if (tm2.Day > d) tm2.Day = 1;
-      counter_blink = 0;
+      seg.resetBlinkCounter();
     }
   }
   // 時設定
@@ -179,7 +178,7 @@ void loop() {
     else if ( setButton.uniquePress() ) {
       tm2.Hour++;
       if (tm2.Hour > 23) tm2.Hour = 0;
-      counter_blink = 0;
+      seg.resetBlinkCounter();
     }
   }
   // 分設定
@@ -198,7 +197,7 @@ void loop() {
     else if ( setButton.uniquePress() ) {
       tm2.Minute++;
       if (tm2.Minute > 59) tm2.Minute = 0;
-      counter_blink = 0;
+      seg.resetBlinkCounter();
     }
   }
   // 秒設定
@@ -222,7 +221,7 @@ void loop() {
     else if ( setButton.uniquePress() ) {
       tm2.Second++;
       if (tm2.Second > 59) tm2.Second = 0;
-      counter_blink = 0;
+      seg.resetBlinkCounter();
     }
   }
   stateMachine.update();
@@ -240,7 +239,7 @@ void S_UTIME_enter() {
   stateLED.off();  // Pin13(LED)を消灯
 }
 void S_UTIME_update() {
-  draw7seg( String( now() ));
+  seg.display( String( now() ));
 }
 void S_UTIME_exit() {
   // NOOP
@@ -255,7 +254,7 @@ void S_CLOCK_update() {
   sprintf( str1, "%02d%02d%02d%02d%02d",
     month(), day(), hour(), minute(), second()
   );
-  draw7seg( str1 );
+  seg.display( str1 );
 }
 void S_CLOCK_exit() {
   // NOOP
@@ -270,7 +269,7 @@ void S_SETY_update() {
   char str1[10], str2[10];
   sprintf( str1, "%4d      ",  tm2.Year + 1970 );
   sprintf( str2, "          " );
-  draw7seg_blink( str1, str2 );
+  seg.blink( str1, str2 );
 }
 void S_SETY_exit() {
   // NOOP
@@ -284,7 +283,7 @@ void S_SETM_update() {
   char str1[10], str2[10];
   sprintf( str1, "%4d%02d    ", tm2.Year + 1970, tm2.Month );
   sprintf( str2, "%4d      ",   tm2.Year + 1970 );
-  draw7seg_blink( str1, str2 );
+  seg.blink( str1, str2 );
 }
 void S_SETM_exit() {
   // NOOP
@@ -298,7 +297,7 @@ void S_SETD_update() {
   char str1[10], str2[10];
   sprintf( str1, "%4d%02d%02d  ", tm2.Year + 1970, tm2.Month, tm2.Day );
   sprintf( str2, "%4d%02d    ",   tm2.Year + 1970 ,tm2.Month );
-  draw7seg_blink( str1, str2 );
+  seg.blink( str1, str2 );
 }
 void S_SETD_exit() {
   // NOOP
@@ -312,7 +311,7 @@ void S_SETh_update() {
   char str1[10], str2[10];
   sprintf( str1, "    %02d    ", tm2.Hour );
   sprintf( str2, "          " );
-  draw7seg_blink( str1, str2 );
+  seg.blink( str1, str2 );
 }
 void S_SETh_exit() {
   // NOOP
@@ -326,7 +325,7 @@ void S_SETm_update() {
   char str1[10], str2[10];
   sprintf( str1, "    %02d%02d  ", tm2.Hour, tm2.Minute );
   sprintf( str2, "    %02d    ",   tm2.Hour );
-  draw7seg_blink( str1, str2 );
+  seg.blink( str1, str2 );
 }
 void S_SETm_exit() {
   // NOOP
@@ -340,7 +339,7 @@ void S_SETs_update() {
   char str1[10], str2[10];
   sprintf( str1, "    %02d%02d%02d", tm2.Hour, tm2.Minute, tm2.Second );
   sprintf( str2, "    %02d%02d  ",   tm2.Hour, tm2.Minute );
-  draw7seg_blink( str1, str2 );
+  seg.blink( str1, str2 );
 }
 void S_SETs_exit() {
   // NOOP
@@ -404,53 +403,6 @@ void initSerial() { // Arduino IDEのシリアルコンソールに送信
   Serial.begin(9600);
   while (!Serial) ; // wait for serial
   delay(200);
-}
-
-void init7seg() { // 7セグメント表示器の初期化
-  Wire.begin();
-  Wire.beginTransmission(SEGLED) ; // 通信の開始
-  Wire.write(0);
-  // 起動メッセージなどはここで作ろう
-  Wire.write(0b00111110); // U
-  Wire.write(0b01010100); // n(N)
-  Wire.write(0b00000100); // i(I)
-  Wire.write(0b01110110); // H(X)
-  Wire.write(0);
-  Wire.write(0b01111000); // t(T)
-  Wire.write(0b00000100); // i(I)
-  Wire.write(0b00110111); // ∏(M)
-  Wire.write(0b11111001); // E.
-  Wire.write(0);
-  Wire.endTransmission();
-}
-
-void draw7seg(String str) {
-  // 現在表示文字列と同じだったら処理しない
-  if ( str7seg.equals(str) ) return;
-  str7seg = str;
-  //stateLED.toggle();
-  // 10桁7セグメントLEDに数値を表示
-  Wire.beginTransmission(SEGLED); // 通信の開始
-  Wire.write(0); // 書き込み桁位置（最上位桁）
-  // 1桁ずつパターンを転送
-  for (int i = 0; i < str.length(); i++) {
-    int chr = str.charAt(i) - 48;
-    int ptn = 0;
-    if (chr >= 0) {
-      ptn = digits[ str.charAt(i) - 48 ];
-    }
-    Wire.write(ptn);
-  }
-  Wire.endTransmission();
-  Serial.println(str);
-}
-
-void draw7seg_blink(String str1, String str2) { // str1とstr2を交互に表示
-  switch (  counter_blink & 0x08 ) { // 800msごと
-    case 0:  draw7seg( str1 ); break;
-    default: draw7seg( str2 );
-  }
-  counter_blink++;
 }
 
 // __TIME__パース用関数
