@@ -62,13 +62,13 @@ void loop() {
     // 51.2秒ごとにRTCに合わせる
     if ( ( counter & 0x0100 ) == 0x0100 ) {   // tickカウンタ0x1FC～01FF
       if ( ( counter & 0x00FC ) == 0x00FC ) { // 4回合わせる（tick=100ms）
-        Serial.println("Check RTC.");
+        Serial.println(F("Check RTC."));
         stateLED.toggle(); // RTCシンクロをパイロットランプで表示
         time_t t_rtc = getRTC();
         time_t t_now = now();
         if ( t_rtc != t_now ) {
           setTime(t_rtc);
-          Serial.println("Adjust from RTC.");
+          Serial.println(F("Adjust from RTC."));
         }
       }
     }
@@ -212,7 +212,7 @@ void loop() {
         time_t t = makeTime(tm2); // time_t はUnix時間（2038年問題あり）
         setTime(t); // システム時刻を設定する
         if (RTC.set(t)) {  // RTCに時刻を設定する
-          Serial.println("Write RTC.");
+          Serial.println(F("Write RTC."));
         }
         stateMachine.transitionTo(UTIME);
       }
@@ -349,14 +349,14 @@ void S_SETs_exit() {
 // サブルーチン集
 
 void initTime() {   // システム時刻をRTCの精密な時刻に設定する
-  Serial.println("Sync to RTC...");
+  Serial.println(F("Sync to RTC..."));
   time_t t_old = getRTC();
   time_t t_now;
   // RTCから秒単位しか取得できない。1秒ぐらい待つとRTCの時刻
   // が変わるはずなので、ループでRTCの時刻が変わるまで待って、
   // 変わった瞬間にシステムの時刻に設定する
   while ( t_old == t_now ) {
-    Serial.println("sync...");
+    Serial.println(F("sync..."));
     t_now = getRTC();
   }
   setTime(t_now); // システム時刻を設定する
@@ -370,7 +370,7 @@ void adjustCompiledTime() { // RTCをPCの時刻に合わせる
     t += 11; // コンパイルから実行までのオフセット秒
     setTime(t); // システム時刻を設定する
     if (RTC.set(t)) {  // RTCに時刻を設定する
-      Serial.println("Write RTC.");
+      Serial.println(F("Write RTC."));
     }
   }
 }
@@ -386,13 +386,13 @@ time_t getRTC() {
     // RTCから読み取り失敗
     if (RTC.chipPresent()) {
       // RTCが無いか動いていない
-      Serial.println("RTC is stopped.  Please run the SetTime");
-      Serial.println("example to initialize the time and begin running.");
+      Serial.println(F("RTC is stopped.  Please run the SetTime"));
+      Serial.println(F("example to initialize the time and begin running."));
       Serial.println();
     } 
     else {
       // RTC読み込みエラー
-      Serial.println("RTC read error!  Please check the circuitry.");
+      Serial.println(F("RTC read error!  Please check the circuitry."));
       Serial.println();
     }
     delay(1000);
