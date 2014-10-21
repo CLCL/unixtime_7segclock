@@ -28,7 +28,7 @@ State SETM  = State(S_SETM_enter,  S_SETM_update,  S_SETM_exit);
 State SETD  = State(S_SETD_enter,  S_SETD_update,  S_SETD_exit);
 State SETh  = State(S_SETh_enter,  S_SETh_update,  S_SETh_exit);
 State SETm  = State(S_SETm_enter,  S_SETm_update,  S_SETm_exit);
-State SETs  = State(S_SETs_enter,  S_SETs_update,  S_SETs_exit);
+State SETh  = State(S_SETs_enter,  S_SETs_update,  S_SETs_exit);
 // FSM:初期状態はUTIME
 FSM stateMachine = FSM(UTIME);
 
