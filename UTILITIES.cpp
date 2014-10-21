@@ -1,18 +1,23 @@
 #include "Arduino.h"
 #include "UTILITIES.h"
 #include <Time.h>
+#include <DS1307RTC.h> // https://www.pjrc.com/teensy/td_libs_DS1307RTC.html
 
 // コンストラクタ（初期化処理）
 UTILITIES::UTILITIES() {
 }
 
-time_t UTILITIES::adjustCompiledTime() { // RTCをPCの時刻に合わせる
+void UTILITIES::adjustCompiledTime() { // RTCをPCの時刻に合わせる
   // コンパイラが__DATE__と__TIME__を定数に置換する
   if (getDate(__DATE__) && getTime(__TIME__)) {
     // getDate/getTimeは定数文字列をグローバル構造体 tm にセットする
     time_t t = makeTime(tm); // time_t はUnix時間（2038年問題あり）
     t += 13; // コンパイルから実行までのオフセット秒
-    return t; // システム時刻を返す
+    setTime(t); // システム時刻を設定する
+    if (RTC.set(t)) {  // RTCに時刻を設定する
+      Serial.println(F("Adjust from compiled time."));
+      Serial.println(F("Write RTC."));
+    }
   }
 }
 

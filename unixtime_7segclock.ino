@@ -52,7 +52,7 @@ void setup() {
   seg.init(); // 7segLED初期化
   initSerial(); // デバッグモニタ用シリアル初期化
   initTime();   // システム時刻初期化（RTCとシンクロする）
-  //adjustCompiledTime(); // RTCに時刻を設定したい時に利用
+  //util.adjustCompiledTime(); // RTCに時刻を設定したい時に利用
 }
 
 // メインループ
@@ -361,15 +361,6 @@ void initTime() {   // システム時刻をRTCの精密な時刻に設定する
     t_now = getRTC();
   }
   setTime(t_now); // システム時刻を設定する
-}
-
-void adjustCompiledTime() { // RTCをPCの時刻に合わせる
-  time_t t = util.adjustCompiledTime();
-  setTime(t); // システム時刻を設定する
-  if (RTC.set(t)) {  // RTCに時刻を設定する
-    Serial.println(F("Adjust from compiled time."));
-    Serial.println(F("Write RTC."));
-  }
 }
 
 time_t getRTC() {
