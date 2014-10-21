@@ -51,7 +51,7 @@ unsigned short counter = 0; // TICKカウンタ
 void setup() {
   seg.init(); // 7segLED初期化
   initSerial(); // デバッグモニタ用シリアル初期化
-  initTime();   // システム時刻初期化（RTCとシンクロする）
+  util.initTime();   // システム時刻初期化（RTCとシンクロする）
   //util.adjustCompiledTime(); // RTCに時刻を設定したい時に利用
 }
 
@@ -65,7 +65,7 @@ void loop() {
       if ( ( counter & 0x00FC ) == 0x00FC ) { // 4回合わせる（tick=100ms）
         Serial.println(F("Check RTC."));
         stateLED.toggle(); // RTCシンクロをパイロットランプで表示
-        time_t t_rtc = getRTC();
+        time_t t_rtc = util.getRTC();
         time_t t_now = now();
         if ( t_rtc != t_now ) {
           setTime(t_rtc);
@@ -348,45 +348,6 @@ void S_SETs_exit() {
 
 
 // サブルーチン集
-
-void initTime() {   // システム時刻をRTCの精密な時刻に設定する
-  Serial.println(F("Sync to RTC..."));
-  time_t t_old = getRTC();
-  time_t t_now;
-  // RTCから秒単位しか取得できない。1秒ぐらい待つとRTCの時刻
-  // が変わるはずなので、ループでRTCの時刻が変わるまで待って、
-  // 変わった瞬間にシステムの時刻に設定する
-  while ( t_old == t_now ) {
-    Serial.println(F("sync..."));
-    t_now = getRTC();
-  }
-  setTime(t_now); // システム時刻を設定する
-}
-
-time_t getRTC() {
-  tmElements_t tm; 
-  // RTCからの読み取り処理
-  if (RTC.read(tm)) {
-    // RTCから読み込み成功
-    time_t t = makeTime(tm);
-    return t;
-  } 
-  else {
-    // RTCから読み取り失敗
-    if (RTC.chipPresent()) {
-      // RTCが無いか動いていない
-      Serial.println(F("RTC is stopped.  Please run the SetTime"));
-      Serial.println(F("example to initialize the time and begin running."));
-      Serial.println();
-    } 
-    else {
-      // RTC読み込みエラー
-      Serial.println(F("RTC read error!  Please check the circuitry."));
-      Serial.println();
-    }
-    delay(1000);
-  } 
-}
 
 void initSerial() { // Arduino IDEのシリアルコンソールに送信
   Serial.begin(9600);
