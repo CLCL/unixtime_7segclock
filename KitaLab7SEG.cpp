@@ -6,7 +6,6 @@
 
 // コンストラクタ（初期化処理）
 KitaLab7SEG::KitaLab7SEG() {
-  counter_blink = 0;
   SEGLED = 0x60; // KitaLab製 10桁I2C 7セグ表示機用I2Cアドレス
   str7seg = "";
   // 7セグメント点灯パターン
@@ -53,22 +52,6 @@ void KitaLab7SEG::display(String str) {
     Wire.write(ptn);
   }
   Wire.endTransmission();
-  Serial.println(str);
 }
 
-void KitaLab7SEG::blink(String str1, String str2)
-{ // str1とstr2を交互に表示
-  switch ( counter_blink & 0x08 ) { // 400msごと
-  case 0:  
-    display( str1 ); 
-    break;
-  default: 
-    display( str2 );
-  }
-  counter_blink++;
-}
-
-void KitaLab7SEG::resetBlinkCounter() {
-  counter_blink = 0;
-}
 
