@@ -9,13 +9,15 @@
 #include <FiniteStateMachine.h> // http://arduino-info.wikispaces.com/HAL-LibrariesUpdates
 #include <Button.h> // http://arduino-info.wikispaces.com/HAL-LibrariesUpdates
 #include <LED.h>    // http://arduino-info.wikispaces.com/HAL-LibrariesUpdates
-#include "KitaLab7SEG.h"
+//#include "KitaLab7SEG.h"
+#include "DISP.h"
 #include "UTILITIES.h"
 
 const int TICK = 100; // システムの1TICKあたりの時間 100ms
 
 // KitaLab 7セグメント10桁LED表示装置表示用補助ライブラリ 
-KitaLab7SEG seg;
+//KitaLab7SEG seg;
+DISP seg;
 UTILITIES util;
 
 // FiniteStateMachine 有限状態機械ライブラリ（State, FSM）
