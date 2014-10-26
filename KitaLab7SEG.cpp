@@ -7,7 +7,6 @@
 // コンストラクタ（初期化処理）
 KitaLab7SEG::KitaLab7SEG() {
   SEGLED = 0x60; // KitaLab製 10桁I2C 7セグ表示機用I2Cアドレス
-  str7seg = "";
   // 7セグメント点灯パターン
   int d[] = { // 7セグメント点灯パターン
     0x3f, 0x06, 0x5b, 0x4f, 0x66, // 0～5
@@ -35,9 +34,6 @@ void KitaLab7SEG::init() {
 }
 
 void KitaLab7SEG::display(String str) {
-  // 現在表示文字列と同じだったら処理しない
-  if ( str7seg.equals(str) ) return;
-  str7seg = str;
   //stateLED.toggle();
   // 10桁7セグメントLEDに数値を表示
   Wire.beginTransmission(SEGLED); // 通信の開始
@@ -53,5 +49,3 @@ void KitaLab7SEG::display(String str) {
   }
   Wire.endTransmission();
 }
-
-

@@ -15,7 +15,6 @@ public:
 private:
   int SEGLED;     // I2C アドレス
   int digits[10]; // 7セグメントパターン（0～9）
-  String str7seg; // 表示している文字
 };
 
 #endif

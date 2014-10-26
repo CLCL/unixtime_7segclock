@@ -16,7 +16,8 @@ public:
   void resetBlinkCounter(void); // 交互表示のカウンターリセット
 
 private:
-  KitaLab7SEG seg;
+  KitaLab7SEG k7seg;
+  String str7seg; // 表示している文字
   unsigned short counter_blink; // 7セグLED ブリンク管理カウンタ
 };
 
