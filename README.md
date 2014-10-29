@@ -32,18 +32,27 @@ Arduino Pro Miniと10桁7セグメントLEDで作る、UNIX時間を表示する
 * 1個  超小型ブレッドボード 白 連結できないタイプ
 * 2ﾋﾟﾝ ピンヘッダ I2Cバス接続用
 
+※全て5V製品（Arduino Pro Mini 328 5V 16MHz・、DS1307 リアルタイムクロック・モジュール など）を使うとI2Cバスレベル変換モジュールが不要になります。7セグ表示器は5V製品ですが3.3Vでも動かせるので固定抵抗の調整等検討してください。
+
 ### オプション
 
 * アクリル板 2mm厚 スモークブラウン1枚・2mm厚 黒2枚
   - ケースがあると出来栄えが全く違うので、ハードルは高いですが用意したほうがいいです
 
-※全て5V製品（Arduino Pro Mini 328 5V 16MHz・、DS1307 リアルタイムクロック・モジュール など）を使うとI2Cバスレベル変換モジュールが不要になります。7セグ表示器は5V製品ですが3.3Vでも動かせるので固定抵抗の調整等検討してください。
+### 7セグメントLEDが入手できない場合の代替品
 
-安価に作りたい場合は、時間はかかりますが、すべての部品をAliExpressなどの海外通販サイトで集めるとよいです。
+* 1個 I2C接続キャラクターLCD
+
+当方では、秋月電子・共立電子で入手できるI2CキャラクターOLEDでの動作を確認しています。他のI2C LCDを使う場合はDISP.cpp内のLCD初期化部分をそれぞれのI2C LCDに合わせて変更する必要があります。
 
 ## Software
 
 * Arduino IDE 1.0.6
+  - [DS1307RTC](https://www.pjrc.com/teensy/td_libs_DS1307RTC.html)
+  - [FiniteStateMachine](http://arduino-info.wikispaces.com/HAL-LibrariesUpdates)
+  - [Button](http://arduino-info.wikispaces.com/HAL-LibrariesUpdates)
+  - [LED](http://arduino-info.wikispaces.com/HAL-LibrariesUpdates)
+  - [I2CLiquidCrystal](http://n.mtng.org/ele/arduino/i2c.html)
 
 ## 回路図・配線
 
