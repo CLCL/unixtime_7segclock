@@ -9,16 +9,13 @@
 #include <FiniteStateMachine.h> // http://arduino-info.wikispaces.com/HAL-LibrariesUpdates
 #include <Button.h> // http://arduino-info.wikispaces.com/HAL-LibrariesUpdates
 #include <LED.h>    // http://arduino-info.wikispaces.com/HAL-LibrariesUpdates
-//#include "KitaLab7SEG.h"
-#include "DISP.h"
-#include "UTILITIES.h"
+#include "DISP.h"      // KitaLab 7セグ表示器・I2C LCDへの表示
+#include "UTILITIES.h" // 初期化ルーチン、RTC・システム時刻取扱いなど
 
 const int TICK = 100; // システムの1TICKあたりの時間 100ms
 
-// KitaLab 7セグメント10桁LED表示装置表示用補助ライブラリ 
-//KitaLab7SEG seg;
-DISP seg;
-UTILITIES util;
+DISP seg;       // 10桁数字表示器（KitaLab7セグ、I2CキャラクターLCD、シリアル）
+UTILITIES util; // 初期化ルーチン、RTC・システム時刻取扱い
 
 // FiniteStateMachine 有限状態機械ライブラリ（State, FSM）
 // State:状態（モード）の設定
@@ -37,8 +34,10 @@ State SETs  = State(S_SETs_enter,  S_SETs_update,  S_SETs_exit);
 FSM stateMachine = FSM(UTIME);
 
 // Buttonライブラリ
+// ピンの選定はArduino Pro MiniのGNDピンから3ピン分はなれているものを
+// 選んでいます（タクトスイッチの部品長に合わせています）。
 Button modeButton = Button( 4, PULLUP); // 4ピン
-Button setButton  = Button(A3, PULLUP); // A3ピン（17ピン）
+Button setButton  = Button(A3, PULLUP); // A3ピン（Arduino Pro Miniだと17ピン）
 
 // LEDライブラリ
 LED stateLED = LED(13); // Arduino本体のパイロットランプLED
@@ -53,8 +52,8 @@ unsigned short counter = 0; // TICKカウンタ
 void setup() {
   seg.init(); // 7segLED初期化
   util.initSerial(); // デバッグモニタ用シリアル初期化
-  util.initTime();   // システム時刻初期化（RTCとシンクロする）
-  //util.adjustCompiledTime(); // RTCに時刻を設定したい時に利用
+  util.initTime();   // システム時刻初期化（RTCとシンクロ）
+  //util.adjustCompiledTime(); // RTCにホストPC時刻を強制設定したい時に利用
 }
 
 // メインループ
