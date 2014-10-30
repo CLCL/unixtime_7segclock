@@ -32,7 +32,7 @@ Arduino Pro Miniと10桁7セグメントLEDで作る、UNIX時間を表示する
 * 1個  超小型ブレッドボード 白 連結できないタイプ
 * 2ﾋﾟﾝ ピンヘッダ I2Cバス接続用
 
-※全て5V製品（Arduino Pro Mini 328 5V 16MHz・、DS1307 リアルタイムクロック・モジュール など）を使うとI2Cバスレベル変換モジュールが不要になります。7セグ表示器は5V製品ですが3.3Vでも動かせるので固定抵抗の調整等検討してください。
+※全て5V製品（Arduino Pro Mini 328 5V 16MHz・、5V対応RTC など）を使うとI2Cバスレベル変換モジュールが不要になります。7セグ表示器は5V製品ですが3.3Vでも動かせるので、7セグ表示器の組み立て時固定抵抗の調整等検討してください。
 
 ### オプション
 
@@ -56,8 +56,16 @@ Arduino Pro Miniと10桁7セグメントLEDで作る、UNIX時間を表示する
 
 ## 回路図・配線
 
+Arduino Pro Mini 328 3.3Vでの配線です。
+
 ![breadboard1](https://github.com/CLCL/unixtime_7segclock/wiki/images/unixtime_7segclock_breadboard_720.jpg)
 
 ## Images
 
+配線図通りに作ってみました。
+
 ![Photo2](https://github.com/CLCL/unixtime_7segclock/wiki/images/img_1069_720.jpg)
+
+全て3.3Vの部品で集め、7セグメント表示器の代わりにI2CキャラクターOLEDを使いました。
+
+![Photo1](https://github.com/CLCL/unixtime_7segclock/wiki/images/img_1078_720.jpg)
